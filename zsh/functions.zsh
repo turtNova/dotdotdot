@@ -21,7 +21,13 @@ gaca() {
 }
 
 goodnight() {
-    /usr/local/bin/custom/goodnight.sh $argv[@]
+    killall -15 brave
+    if [ "$1" = "-r" ]; then
+        echo restarting
+        shutdown -r "+0"
+    else
+        shutdown -h "+0"
+    fi
 }
 
 rojomap() {
