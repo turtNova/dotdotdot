@@ -20,17 +20,17 @@ return {
         priority = 3,
         opts = {
             ensure_installed = {
-                'lua_ls',
-                'html',
-                'cssls',
-                'roslyn_ls',
-                'ts_ls',
-                'pyright',
-                'clangd',
-                'rust_analyzer',
-                'svelte',
-                'pyright',
-            }
+                "lua_ls",
+                "html",
+                "cssls",
+                -- 'roslyn_ls',
+                "ts_ls",
+                "pyright",
+                "clangd",
+                "rust_analyzer",
+                "svelte",
+                "pyright",
+            },
         },
     },
     {
@@ -45,7 +45,7 @@ return {
         opts = {
             types = {
                 definition_files = {
-                    ["@roblox"] = '/home/turt/Documents/Misc/globalTypes.d.luau'
+                    ["@roblox"] = "/home/turt/Documents/Misc/globalTypes.d.luau",
                 },
             },
             platform = {
