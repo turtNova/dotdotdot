@@ -4,12 +4,12 @@ to restart a buffer:
 :bufdo e
 --]]
 
-require("options")
-require("mappings")
-require("plugins")
-require("lsp")
-
 -- vim.cmd("set keymap=dvorak")
+
+require("config.options")
+require("config.lazy")
+require("config.lsp")
+require("mappings")
 
 -- custom tmux session support
 local tmux = vim.env.Z_TMUX_CODE
@@ -37,69 +37,10 @@ vim.api.nvim_create_autocmd('FileType', {
     end
 })
 
-
 -- Custom functions
 vim.api.nvim_create_user_command("EditVim", function()
     vim.cmd('tabedit ~/.config/nvim/init.lua')
 end, {})
-
--- PARSING BRUHHHHHHHHHHHHHH==========================================
-
-local parsers = {
-    'rust',
-    'bash',
-    'c',
-    'python',
-    'lua'
-}
-
-require('nvim-treesitter').install({ parsers })
-
--- STOLEN CODE
----@param buf integer
----@param language string
-local function treesitter_try_attach(buf, language)
-    -- Check if a parser exists and load it
-    if not vim.treesitter.language.add(language) then return end
-    -- Enable syntax highlighting and other treesitter features
-    vim.treesitter.start(buf, language)
-
-    -- Enable treesitter based folds
-    -- For more info on folds see `:help folds`
-    -- vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-    -- vim.wo.foldmethod = 'expr'
-
-    -- Check if treesitter indentation is available for this language, and if so enable it
-    -- in case there is no indent query, the indentexpr will fallback to the vim's built in one
-    local has_indent_query = vim.treesitter.query.get(language, 'indents') ~= nil
-
-    -- Enable treesitter based indentation
-    if has_indent_query then vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()" end
-end
-
-local available_parsers = require('nvim-treesitter').get_available()
-
-vim.api.nvim_create_autocmd('FileType', {
-    callback = function(args)
-        local buf, filetype = args.buf, args.match
-
-        local language = vim.treesitter.language.get_lang(filetype)
-        if not language then return end
-
-        local installed_parsers = require('nvim-treesitter').get_installed 'parsers'
-
-        if vim.tbl_contains(installed_parsers, language) then
-            -- Enable the parser if it is already installed
-            treesitter_try_attach(buf, language)
-        elseif vim.tbl_contains(available_parsers, language) then
-            -- If a parser is available in `nvim-treesitter`, auto-install it and enable it after the installation is done
-            require('nvim-treesitter').install(language):await(function() treesitter_try_attach(buf, language) end)
-        else
-            -- Try to enable treesitter features in case the parser exists but is not available from `nvim-treesitter`
-            treesitter_try_attach(buf, language)
-        end
-    end,
-})
 
 -- vim.api.nvim_create_autocmd('FileType', {
 --     callback = function(args)
@@ -108,20 +49,6 @@ vim.api.nvim_create_autocmd('FileType', {
 --         end
 --     end,
 -- })
-
---[[
-        LINTING YOOOOOOOOOO
-        --]]
-
-require('lint').linters_by_ft = {
-    python = { 'ruff' },
-}
-
-vim.api.nvim_create_autocmd({ "BufWritePost", "InsertLeave" }, {
-    callback = function()
-        require('lint').try_lint()
-    end
-})
 
 -- vim.cmd('hi statusline guibg=NONE')
 

@@ -1,4 +1,5 @@
 /zsh/.zcompdump
 /nvim/nvim-pack-lock.json
+/nvim/lazy-lock.json
 /local
 /alacritty/font.toml
